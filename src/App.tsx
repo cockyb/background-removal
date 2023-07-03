@@ -3,7 +3,7 @@ import imglyRemoveBackground from '@imgly/background-removal';
 import { useState } from 'react';
 
 
-type ImageSource = ImageData | ArrayBuffer | Uint8Array | Blob | URL | string;
+// type ImageSource = ImageData | ArrayBuffer | Uint8Array | Blob | URL | string;
 
 export default function App() {
     const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
