@@ -1,5 +1,6 @@
-import { ChangeEventHandler, useState } from 'react';
-import ImageConvertor from '../components/ImageConvertor';
+import ImageConvertor from 'components/ImageConvertor';
+import type { ChangeEventHandler } from 'react';
+import { useState } from 'react';
 
 // type ImageSource = ImageData | ArrayBuffer | Uint8Array | Blob | URL | string;
 
@@ -26,7 +27,7 @@ export default function Home() {
             <input type="file" value="" multiple onChange={handleFileChange} />
             <ul>
                 {images.map((image) => (
-                    <li>
+                    <li key={image}>
                         <ImageConvertor image={image} />
                     </li>
                 ))}
