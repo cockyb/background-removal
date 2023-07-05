@@ -73,7 +73,7 @@ export default function Home() {
             <section className="py-6">
                 {images.length > 0 && (
                     <ul className="grid grid-cols-4 gap-3">
-                        {images.map(({ blob, name }, index) => (
+                        {images.map(({ blob, name }) => (
                             <ImageConvertor
                                 key={crypto.randomUUID()}
                                 image={blob}
