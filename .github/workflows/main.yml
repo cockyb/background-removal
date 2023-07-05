@@ -3,7 +3,7 @@ name: sub-branch
 on:
   push:
     branches:
-      - main    # sub-branch[branch name] 브랜치에서 push 이벤트가 일어났을 때 실행
+      - main    
 
 jobs:
   build:
@@ -12,7 +12,7 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@master
 
-      - name: Cache node modules  # node modules 캐싱
+      - name: Cache node modules  
         uses: actions/cache@v1
         with:
           path: node_modules
@@ -26,6 +26,9 @@ jobs:
 
       - name: Build # project build
         run: yarn build
+        
+      - name: wasm & onnx deploy
+        run : cp node_modules/@imgly/background-removal/dist/*.wasm ./dist/assets & cp node_modules/@imgly/background-removal/dist/*.onnx ./dist/assets
 
       - name: Deploy 
         env:
