@@ -7,7 +7,7 @@ import React from 'react';
 import When from 'components/common/When';
 
 const config: Config = {
-    publicPath: 'https://dq2ft8ldnul0t.cloudfront.net/assets/', // path to the wasm files
+    publicPath: 'https://cropbg.net/assets/',
 };
 
 interface ImageConvertorProps {
