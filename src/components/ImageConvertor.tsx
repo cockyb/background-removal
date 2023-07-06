@@ -2,51 +2,59 @@ import type { Config } from '@imgly/background-removal';
 import imglyRemoveBackground from '@imgly/background-removal';
 import clsx from 'clsx';
 import { useEffect, useState } from 'react';
-import { SlClose } from 'react-icons/sl';
 import { ImSpinner } from 'react-icons/im';
+import React from 'react';
+import When from 'components/common/When';
+
+const config: Config = {
+    publicPath: 'https://dq2ft8ldnul0t.cloudfront.net/assets/', // path to the wasm files
+};
 
 interface ImageConvertorProps {
     image: string;
     fileName: string;
-    onClickClose: () => void;
+    done: () => void;
 }
 
 const TABS = ['원본', '제거된 배경'] as const;
 type Tab = (typeof TABS)[number];
 
-export default function ImageConvertor(props: ImageConvertorProps) {
-    const { image: originImage, fileName: originFileName, onClickClose } = props;
+function ImageConvertor(props: ImageConvertorProps) {
+    const { image: originImage, fileName: originFileName, done } = props;
     const [convertedImage, setConvertedImage] = useState<string>('');
     const [fileName, setFileName] = useState<string>('');
     const [tab, setTab] = useState<Tab>('원본');
-
-    const onClickReConvert = async () => {
-        setConvertedImage('');
-        const url = await convertImage(originImage);
-        setConvertedImage(url);
-    };
-
-    const convertImage = async (image: string) => {
-        const config: Config = {
-            publicPath: 'https://dq2ft8ldnul0t.cloudfront.net/assets/', // path to the wasm files
-        };
-
-        const blob = await imglyRemoveBackground(image, config);
-        const url = URL.createObjectURL(blob);
-        return url;
-    };
+    const [loaded, setLoaded] = useState(false);
 
     useEffect(() => {
         (async () => {
-            const url = await convertImage(originImage);
+            const blob = await imglyRemoveBackground(originImage, config);
+            const url = URL.createObjectURL(blob);
             setConvertedImage(url);
+            done();
+            setLoaded(true);
         })();
-    }, [originImage]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     useEffect(() => {
         setFileName(originFileName);
     }, [originFileName]);
 
+    useEffect(() => {
+        return () => {
+            URL.revokeObjectURL(convertedImage);
+        };
+    }, [convertedImage]);
+
+    if (loaded === false) {
+        return (
+            <div className="w-full aspect-square flex flex-col gap-3 items-center justify-center rounded-sm shadow-sm">
+                <ImSpinner className="w-6 h-6 animate-spin" />
+                이미지를 순차적으로 변환 중입니다.
+            </div>
+        );
+    }
     return (
         <div className="px-4 py-3 border border-gray-300 rounded-sm shadow-sm flex flex-col justify-between gap-4">
             <div className="flex gap-3">
@@ -55,12 +63,20 @@ export default function ImageConvertor(props: ImageConvertorProps) {
                         {t}
                     </button>
                 ))}
-                <button className="ml-auto" onClick={onClickClose}>
-                    <SlClose className="w-5 h-5 hover:text-gray-400 duration-150" />
-                </button>
             </div>
             {tab === '원본' && <img className="w-full aspect-square object-cover" src={originImage} alt="" />}
-            {tab === '제거된 배경' && <ConvertedImage image={convertedImage} />}
+            {tab === '제거된 배경' && (
+                <When
+                    condition={!!convertedImage}
+                    fallback={
+                        <div className="w-full aspect-square flex items-center justify-center">
+                            <ImSpinner className="w-6 h-6 animate-spin" />
+                        </div>
+                    }
+                >
+                    <img className="w-full aspect-square object-cover" src={convertedImage} alt="" />
+                </When>
+            )}
 
             <label className="flex gap-2 items-center justify-center flex-wrap">
                 <span className="text-gray-500">파일명</span>
@@ -74,9 +90,6 @@ export default function ImageConvertor(props: ImageConvertorProps) {
             </label>
 
             <div className="flex gap-3 items-center justify-center flex-wrap">
-                <button className="px-4 py-2 text-gray-500 rounded-md border-gray-400 border text-sm" onClick={onClickReConvert}>
-                    다시변환
-                </button>
                 <a
                     className={clsx('px-4 py-2 text-white bg-blue-400 rounded-md text-sm', {
                         'opacity-50 cursor-not-allowed pointer-events-none': !convertedImage,
@@ -91,14 +104,4 @@ export default function ImageConvertor(props: ImageConvertorProps) {
     );
 }
 
-function ConvertedImage(props: { image: string }) {
-    const { image } = props;
-
-    if (!image)
-        return (
-            <div className="w-full aspect-square flex items-center justify-center">
-                <ImSpinner className="w-6 h-6 animate-spin" />
-            </div>
-        );
-    return <img className="w-full aspect-square object-cover" src={image} alt="" />;
-}
+export default React.memo(ImageConvertor);
