@@ -49,9 +49,9 @@ function ImageConvertor(props: ImageConvertorProps) {
 
     if (loaded === false) {
         return (
-            <div className="w-full aspect-square flex flex-col gap-3 items-center justify-center rounded-sm shadow-sm">
+            <div className="w-full aspect-square flex flex-col gap-3 items-center justify-center rounded-sm shadow-sm p-4">
                 <ImSpinner className="w-6 h-6 animate-spin" />
-                이미지를 순차적으로 변환 중입니다.
+                <p className="text-xs text-center">이미지를 순차적으로 변환 중입니다.</p>
             </div>
         );
     }

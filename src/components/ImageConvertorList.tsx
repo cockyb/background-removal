@@ -15,7 +15,7 @@ export default function ImageConvertorList(props: ImageConvertorListProps) {
     const { items: sequentialItems } = useSequentialList(items);
 
     return (
-        <ul className="grid grid-cols-3 gap-3">
+        <ul className="grid grid-cols-2 gap-3">
             {sequentialItems.map(({ blob, name, done }) => (
                 <ImageConvertor key={name} image={blob} fileName={name} done={() => done()} />
             ))}
