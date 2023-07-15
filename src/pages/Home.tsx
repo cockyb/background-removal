@@ -4,12 +4,13 @@ import ImageUploadInput from 'components/ImageUploadInput';
 import Section from 'components/common/Section';
 import When from 'components/common/When';
 import { useState } from 'react';
-
 import BeforeImage from 'assets/images/before.jpg';
 import AfterImage from 'assets/images/after.png';
+import clsx from 'clsx';
 
 export default function Home() {
     const [images, setImages] = useState<ImageInfo[]>([]);
+    const [isAnimationEnd, setIsAnimationEnd] = useState<boolean>(false);
 
     const handleImages = async (files: FileList) => {
         const newImages = await Promise.all(
@@ -29,7 +30,7 @@ export default function Home() {
     return (
         <>
             <When condition={images.length === 0}>
-                <Section className="flex gap-12 items-center flex-col lg:flex-row">
+                <Section className="flex gap-12 items-center justify-center flex-col lg:flex-row">
                     <div className="flex flex-col gap-4 items-center">
                         <div className="relative w-72 h-72">
                             <img
@@ -37,9 +38,12 @@ export default function Home() {
                                 src={BeforeImage}
                                 alt="before image"
                                 style={{ animationFillMode: 'backwards' }}
+                                onAnimationEnd={() => setIsAnimationEnd(true)}
                             />
                             <img
-                                className="w-72 h-72 object-cover rounded-xl shadow-xl animate-fade-in absolute top-0 left-0 bg-white hover:opacity-0 transition-opacity duration-300"
+                                className={clsx('w-72 h-72 object-cover rounded-xl shadow-xl animate-fade-in absolute top-0 left-0 bg-white transition-opacity duration-300', {
+                                    'hover:opacity-0': isAnimationEnd,
+                                })}
                                 src={AfterImage}
                                 alt="after image"
                             />
@@ -47,9 +51,11 @@ export default function Home() {
                         <span className="flex flex-col gap-2">
                             <p className="text-4xl font-bold">
                                 <strong className="bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-green-500 font-bold">무료로 </strong>
-                                이미지 배경을 제거해 보세요.
+                                이미지 배경을 <br /> 제거해 보세요.
                             </p>
-                            <p className="text-gray-500 text-sm">추가 비용 및 개인 정보 보호 문제 없이 브라우저에서 직접 이미지의 배경을 쉽게 제거할 수 있습니다.</p>
+                            <p className="text-gray-500 text-sm">
+                                추가 비용 및 개인 정보 보호 문제 없이 브라우저에서 <br /> 직접 이미지의 배경을 쉽게 제거할 수 있습니다.
+                            </p>
                         </span>
                     </div>
                     <div className="flex flex-col gap-2">

@@ -47,7 +47,7 @@ export default function ImageUploadInput(props: ImageUploadInputProps) {
             <h2 className="mt-4 text-xl font-medium text-gray-700 tracking-wide">이미지 파일</h2>
 
             <p className="mt-2 text-gray-500 tracking-wide">
-                이미지 파일을 여기에 끌어다 놓거나 <span className="text-blue-500">클릭</span>하여 업로드하세요.
+                이미지 파일을 여기에 끌어다 놓거나 <br /> <span className="text-blue-500">클릭</span>하여 업로드하세요.
             </p>
 
             <input id={inputId} type="file" className="hidden" multiple onChange={handleFileChange} />

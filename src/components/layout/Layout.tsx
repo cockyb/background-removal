@@ -6,11 +6,9 @@ export default function Layout() {
         <>
             <Header />
             <div className="flex">
-                <aside className="w-60" />
-                <main className="px-6 py-6">
+                <main className="px-6 py-6 flex-1">
                     <Outlet />
                 </main>
-                <aside className="w-60" />
             </div>
         </>
     );
